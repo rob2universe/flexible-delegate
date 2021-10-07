@@ -1,37 +1,101 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_0fr9mxs" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.8.1">
-  <bpmn:process id="vanilla-camunda-template-process" isExecutable="true">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_0fr9mxs" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.10.0">
+  <bpmn:process id="example-process" isExecutable="true">
     <bpmn:startEvent id="StartEvent_1">
       <bpmn:outgoing>SequenceFlow_1fp17al</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="SequenceFlow_1fp17al" sourceRef="StartEvent_1" targetRef="LogSomethingTask" />
     <bpmn:endEvent id="EndEvent_0x6ir2l">
-      <bpmn:incoming>SequenceFlow_16gzt2m</bpmn:incoming>
+      <bpmn:incoming>Flow_0jbtuid</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="SequenceFlow_16gzt2m" sourceRef="LogSomethingTask" targetRef="EndEvent_0x6ir2l" />
-    <bpmn:serviceTask id="LogSomethingTask" name="Log something" camunda:delegateExpression="${logger}">
+    <bpmn:serviceTask id="LogSomethingTask" name="Call Service using Delegate Expression (no parameters)" camunda:delegateExpression="${logger}">
       <bpmn:incoming>SequenceFlow_1fp17al</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_16gzt2m</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="SequenceFlow_16gzt2m" sourceRef="LogSomethingTask" targetRef="Activity_0ybq5zj" />
+    <bpmn:serviceTask id="Activity_17kd2oy" name="Call specific method using Expression with own parameter and execution" camunda:expression="${logger.executeWith(execution, &#34;HELLO&#34;)}">
+      <bpmn:incoming>Flow_0gt47ms</bpmn:incoming>
+      <bpmn:outgoing>Flow_0jbtuid</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0jbtuid" sourceRef="Activity_17kd2oy" targetRef="EndEvent_0x6ir2l" />
+    <bpmn:serviceTask id="Activity_0ybq5zj" name="Call Service using Delegate Expression and Input Parameter" camunda:delegateExpression="${logger}">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="myInputParameter">My Input Parameter Value</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_16gzt2m</bpmn:incoming>
+      <bpmn:outgoing>Flow_0wbln86</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0wbln86" sourceRef="Activity_0ybq5zj" targetRef="Activity_0rj53fv" />
+    <bpmn:serviceTask id="Activity_0rj53fv" name="Call Service using Delegate Expression and injected property" camunda:delegateExpression="${logger}">
+      <bpmn:extensionElements>
+        <camunda:field name="injectedProperty">
+          <camunda:string>ABC</camunda:string>
+        </camunda:field>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0wbln86</bpmn:incoming>
+      <bpmn:outgoing>Flow_1cilh0p</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1cilh0p" sourceRef="Activity_0rj53fv" targetRef="Activity_0d17yiw" />
+    <bpmn:serviceTask id="Activity_0d17yiw" name="Call Service using Delegate expression and extension properties" camunda:delegateExpression="${logger}">
+      <bpmn:extensionElements>
+        <camunda:properties>
+          <camunda:property name="myExtensionProperty1" value="Extension Property Value 1" />
+          <camunda:property name="myExtensionProperty2" value="Extension Property Value 2" />
+        </camunda:properties>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1cilh0p</bpmn:incoming>
+      <bpmn:outgoing>Flow_0gt47ms</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0gt47ms" sourceRef="Activity_0d17yiw" targetRef="Activity_17kd2oy" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="vanilla-camunda-template-process">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="example-process">
       <bpmndi:BPMNEdge id="SequenceFlow_16gzt2m_di" bpmnElement="SequenceFlow_16gzt2m">
-        <di:waypoint x="370" y="117" />
-        <di:waypoint x="432" y="117" />
+        <di:waypoint x="320" y="117" />
+        <di:waypoint x="360" y="117" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1fp17al_di" bpmnElement="SequenceFlow_1fp17al">
-        <di:waypoint x="215" y="117" />
-        <di:waypoint x="270" y="117" />
+        <di:waypoint x="188" y="117" />
+        <di:waypoint x="220" y="117" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
-        <dc:Bounds x="179" y="99" width="36" height="36" />
+      <bpmndi:BPMNEdge id="Flow_0jbtuid_di" bpmnElement="Flow_0jbtuid">
+        <di:waypoint x="900" y="117" />
+        <di:waypoint x="932" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0wbln86_di" bpmnElement="Flow_0wbln86">
+        <di:waypoint x="460" y="117" />
+        <di:waypoint x="510" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1cilh0p_di" bpmnElement="Flow_1cilh0p">
+        <di:waypoint x="610" y="117" />
+        <di:waypoint x="660" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0gt47ms_di" bpmnElement="Flow_0gt47ms">
+        <di:waypoint x="760" y="117" />
+        <di:waypoint x="800" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_19reg6c_di" bpmnElement="LogSomethingTask">
+        <dc:Bounds x="220" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0d17yiw_di" bpmnElement="Activity_0d17yiw">
+        <dc:Bounds x="660" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_17kd2oy_di" bpmnElement="Activity_17kd2oy">
+        <dc:Bounds x="800" y="77" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="EndEvent_0x6ir2l_di" bpmnElement="EndEvent_0x6ir2l">
-        <dc:Bounds x="432" y="99" width="36" height="36" />
+        <dc:Bounds x="932" y="99" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_19reg6c_di" bpmnElement="LogSomethingTask">
-        <dc:Bounds x="270" y="77" width="100" height="80" />
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="152" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0rj53fv_di" bpmnElement="Activity_0rj53fv">
+        <dc:Bounds x="510" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ybq5zj_di" bpmnElement="Activity_0ybq5zj">
+        <dc:Bounds x="360" y="77" width="100" height="80" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
